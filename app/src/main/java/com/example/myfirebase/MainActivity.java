@@ -1,6 +1,8 @@
 package com.example.myfirebase;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private static final int RC_sign_in = 1000;
@@ -36,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
     ArrayList<String> notes;
     ListView listView;
-    ArrayAdapter<String> arrayAdapter;
+     private ArrayAdapter<String> arrayAdapter  ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         editText = findViewById(R.id.et);
         listView = findViewById(R.id.lv);
         notes = new ArrayList<>();
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter(this, R.layout.each_row, R.id.tvlist, notes);
+        final ArrayAdapter<String> arrayAdapter  = new ArrayAdapter<String>(this, R.layout.each_row, R.id.tvlist, notes);
         listView.setAdapter(arrayAdapter);
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -71,51 +75,35 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             //child listener for redaig th edata frm the databse
-            myRef.child("Note").addChildEventListener(new ChildEventListener(){  @Override
-                                                          public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                                            String data=dataSnapshot.getValue(String.class);
-                                                            notes.add(data);
-                                                            arrayAdapter.notifyDataSetChanged();
-                                                          }
+            myRef.child("Note").addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    String data = dataSnapshot.getValue(String.class);
+                    notes.add(data);
+                    arrayAdapter.notifyDataSetChanged();
+                }
 
-                                                          @Override
-                                                          public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                                                          }
+                }
 
-                                                          @Override
-                                                          public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                                                          }
+                }
 
-                                                          @Override
-                                                          public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                                                          }
+                }
 
-                                                          @Override
-                                                          public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                                          }} );
+                }
+            });
             //read from the database using addvalue eventlistener
-                                              //    //        myRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                // This method is called once with the initial value and again
-//                // whenever data at this location is updated.
-//
-//                String value = dataSnapshot.getValue(String.class);
-//                Log.d("TAG", "Value is:" + value);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                //when failed to reda value
-//                Log.w("TAG", " Failed to read value." + databaseError.toException());
-//            }
-//        });
-            //read the data using child listener
-            //better in comparison to the addvalue listener
 
         } else {
             // user not logged in
@@ -124,12 +112,13 @@ public class MainActivity extends AppCompatActivity {
                     .createSignInIntentBuilder()
                     .setIsSmartLockEnabled(false)
                     .setAvailableProviders(Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build(),
-                    new AuthUI.IdpConfig.GoogleBuilder().build())).build(), RC_sign_in);
+                            new AuthUI.IdpConfig.GoogleBuilder().build())).build(), RC_sign_in);
         }
     }
 
-    //   if the user sign in succesfly then we get a callback to the onActivityResult  function
+    // if the user sign in succesfly then we get a callback to the onActivityResult  function
     //this function will tell what happened in the loggin scren
+    @SuppressLint("NewApi")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -149,43 +138,47 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 //child listener for reding th edata frm the databse
-                myRef.child("Note").addChildEventListener(new ChildEventListener() {    @Override
-                                                              public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                                                 String data = dataSnapshot.getValue(String.class);
-                                                                 notes.add(data);
-                                                                 arrayAdapter.notifyDataSetChanged();
-                                                              }
+                myRef.child("Note").addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        String data = dataSnapshot.getValue(String.class);
+                        notes.add(data);
+                        arrayAdapter.notifyDataSetChanged();
+                    }
 
-                                                              @Override
-                                                              public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                                                              }
+                    }
 
-                                                              @Override
-                                                              public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                                                              }
+                    }
 
-                                                              @Override
-                                                              public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                                                              }
+                    }
 
-                                                              @Override
-                                                              public void onCancelled(@NonNull DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                                              }}  );
-                firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
-                Log.e("TAG","inside onActivityResult: "+ firebaseUser.getDisplayName());
-                Log.e("TAG","inside OnActivityResult:"+ firebaseUser.getUid());
+                    }
+                });
+                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+
             } else {
                 //sign in failed
-                if(idpResponse==null){
+                if (idpResponse == null) {
                     //user pressed back button
 
                 }
-                if (idpResponse.getError().getErrorCode()== ErrorCodes.NO_NETWORK){
-                    return;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    if (idpResponse != null && Objects.requireNonNull(idpResponse.getError()).getErrorCode() == ErrorCodes.NO_NETWORK) {
+                        return;
+                    }
                 }
             }
         }
@@ -194,6 +187,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-    FirebaseAuth.getInstance().signOut();
+        FirebaseAuth.getInstance().signOut();
     }
 }
