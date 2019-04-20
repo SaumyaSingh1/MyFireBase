@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                           }} );
             //read from the database using addvalue eventlistener
-            //    //        myRef.addValueEventListener(new ValueEventListener() {
+                                              //    //        myRef.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                // This method is called once with the initial value and again
@@ -191,4 +191,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    FirebaseAuth.getInstance().signOut();
+    }
 }
